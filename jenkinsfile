@@ -37,5 +37,26 @@ pipeline {
           }
         }
     }
+    stage('Upload to Artifactory') {
+            steps {
+                script {
+                    // Define a new Artifactory server instance
+                    def server = Artifactory.server 'jfrog-instance'  // Replace 'ServerID' with your Artifactory server ID from Jenkins configuration.
+                    
+                    // Define the artifact
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "**/*.war",
+                                "target": "online-bookstore/${BUILD_ID}/*.war"
+                            }
+                        ]
+                    }"""
+
+                    // Upload the artifact
+                    server.upload(uploadSpec)
+                }
+            }
+        }
   }
 }
