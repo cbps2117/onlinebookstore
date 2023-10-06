@@ -48,7 +48,7 @@ pipeline {
                         "files": [
                             {
                                 "pattern": "**/*.war",
-                                "target": "online-bookstore/${BUILD_ID}/*.war"
+                                "target": "online-bookstore/${BUILD_ID}/onlinebookstore-1.0.war"
                             }
                         ]
                     }"""
