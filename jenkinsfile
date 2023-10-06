@@ -13,6 +13,11 @@ pipeline {
       steps {
         sh 'mvn clean install'
       }
+      post {
+          always {
+              archiveArtifacts artifacts: '**/*.war', onlyIfSuccessful: true
+          }
+      }
     }
     stage('sonarqube-scanning'){
       steps {
