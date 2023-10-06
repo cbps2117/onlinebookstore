@@ -58,5 +58,27 @@ pipeline {
                 }
             }
         }
+        stage('Download from Artifactory') {
+            steps {
+                script {
+					          sh 'mkdir -p ${WORKSPACE}/ready_deploy_binary/'
+                    // Define the Artifactory server instance
+                    def server = Artifactory.server 'jfrog-instance'  // Replace 'ServerID' with your Artifactory server ID from Jenkins configuration.
+
+                    // Define download spec
+                    def downloadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "online-bookstore/16/onlinebookstore-1.0.war",
+                                "target": "${WORKSPACE}/ready_deploy_binary/"
+                            }
+                        ]
+                    }"""
+
+                    // Download the artifact
+                    server.download downloadSpec
+                }
+            }
+        }
   }
 }
