@@ -85,17 +85,9 @@ pipeline {
 	stage('Deploy to Tomcat') {
             steps {
                 script {
-                    // Replace with your Tomcat server details and credentials ID
-                    def tomcat_url = 'http://54.173.76.28:8080/'
-                    def credentialsId = 'tomcat-deployer'
-                    def war_file_path = '${WORKSPACE}/ready_deploy_binary/${BUILD_ID}/onlinebookstore-1.0.war'
-                    def context_path = '/onlinebookstore'
-
-                    // Deploy .war to Tomcat
-                    sh """curl -T ${war_file_path} \\
-                           -u ${credentialsId} \\
-                           "${tomcat_url}/manager/text/deploy?path=${context_path}&update=true" """
+                    deploy adapters: [tomcat8(credentialsId: 'tomcat-deployer', path: '/onlinebookstore', url: 'http://54.173.76.28:8080/')], war: '${WORKSPACE}/ready_deploy_binary/${BUILD_ID}/onlinebookstore-1.0.war'
                 }
+                
             }
         }
     
