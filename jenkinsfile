@@ -27,7 +27,7 @@ pipeline {
     stage("Quality Gate") {
         steps {
           retry(3) {
-            sleep 30s
+            sh 'sleep 30s'
             waitForQualityGate abortPipeline: true
           }
         }
