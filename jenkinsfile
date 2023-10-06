@@ -69,7 +69,7 @@ pipeline {
                     def downloadSpec = """{
                         "files": [
                             {
-                                "pattern": "online-bookstore/16/onlinebookstore-1.0.war",
+                                "pattern": "online-bookstore/${BUILD_ID}/onlinebookstore-1.0.war",
                                 "target": "${WORKSPACE}/ready_deploy_binary/"
                             }
                         ]
@@ -86,7 +86,7 @@ pipeline {
                     // Replace with your Tomcat server details and credentials ID
                     def tomcat_url = 'http://54.173.76.28:8080'
                     def credentialsId = 'tomcat-deployer'
-                    def war_file_path = '${WORKSPACE}/ready_deploy_binary/onlinebookstore-1.0.war'
+                    def war_file_path = '${WORKSPACE}/ready_deploy_binary/${BUILD_ID}/onlinebookstore-1.0.war'
                     def context_path = '/onlinebookstore'
 
                     // Deploy .war to Tomcat
