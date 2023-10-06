@@ -20,7 +20,7 @@ pipeline {
           sh 'mvn sonar:sonar \
                 -Dsonar.projectKey=online-book-store \
                 -Dsonar.projectName="online-book-store" \
-                -Dsonar.login=sqa_f78d0d4e2a2be94550489789968eff5b801e53f9'
+                -Dsonar.login=squ_c7fbb3bf3647607967ac2ed5a162ed0c5603bc67'
         }
       }
     }
