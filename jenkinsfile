@@ -80,7 +80,8 @@ pipeline {
                 }
             }
         }
-	stage('Deploy to Tomcat') {
+	
+	/*stage('Deploy to Tomcat') {
             steps {
                 script {
                     // Replace with your Tomcat server details and credentials ID
@@ -95,6 +96,18 @@ pipeline {
                            "${tomcat_url}/manager/text/deploy?path=${context_path}&update=true" """
                 }
             }
+        } */
+	stage('Deploy to tomcat') {
+            steps {
+                script {
+                    // Assuming the WAR file is in the target directory and named 'myapp.war'
+                    def warFile = findFiles(glob: '${WORKSPACE}/ready_deploy_binary/${BUILD_ID}/onlinebookstore-1.0.war')[0].path
+
+                    // Deploy to Tomcat
+                    deploy adapters: [tomcat8(credentialsId: 'tomcat-deployer', path: '/onlinebookstore', url: 'http://54.173.76.28:8080/')], war: warFile
+                }
+            }
         }
+    }
   }
 }
