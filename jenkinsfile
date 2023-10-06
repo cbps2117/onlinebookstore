@@ -86,7 +86,7 @@ pipeline {
                     // Replace with your Tomcat server details and credentials ID
                     def tomcat_url = 'http://54.173.76.28:8080'
                     def credentialsId = 'tomcat-deployer'
-                    def war_file_path = 'ready_deploy_binary/onlinebookstore-1.0.war'
+                    def war_file_path = '${WORKSPACE}/ready_deploy_binary/onlinebookstore-1.0.war'
                     def context_path = '/onlinebookstore'
 
                     // Deploy .war to Tomcat
