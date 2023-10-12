@@ -17,7 +17,7 @@ pipeline {
 		stage('sonarqube-scanging'){
 			steps {
 				withSonarQubeEnv('my-sonarqube-server') {
-					sh 'mvn clean sonar:sonar'
+					sh 'mvn sonar:sonar'
 				}
 			}
 		}
@@ -25,6 +25,46 @@ pipeline {
 			steps {
 				sh 'sleep 30s'
 				waitForQualityGate abortPipeline: true
+			}
+		}
+		stage('artifactory-upload'){
+			steps{
+				script {
+					// Define a new Artifactory server instance
+					def server = Artifactory.server 'jfrog-instance'  // Replace 'ServerID' with your Artifactory server ID from Jenkins configuration.
+					
+					// Define the artifact
+					def uploadSpec = """{
+						"files": [
+							{
+								"pattern": "**/*.war",
+								"target": "online-bookstore/${BUILD_TIMESTAMP}/onlinebookstore-1.0.war"
+							}
+						]
+					}"""
+
+					// Upload the artifact
+					server.upload(uploadSpec)
+                }
+			}
+		}
+		stage('download from artifactory'){
+			steps{
+				script{
+					sh 'mkdir -p ${WORKSPACE}\readytodeploy'
+					def server = Artifactory.server 'jfrog-instance'
+					def downloadSpec = """{
+	                        "files": [
+	                            {
+	                                "pattern": "online-bookstore/${BUILD_TIMESTAMP}/onlinebookstore-1.0.war",
+	                                "target": "${WORKSPACE}/ready_deploy_binary/"
+	                            }
+	                        ]
+	                    }"""
+	
+	                    // Download the artifact
+                    server.download downloadSpec
+				}
 			}
 		}
 	}
