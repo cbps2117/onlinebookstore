@@ -14,5 +14,12 @@ pipeline {
 				sh 'mvn clean install'
 			}
 		}
+		stage('sonarqube-scanging'){
+			steps {
+				withSonarQubeEnv('my-sonarqube-server') {
+					sh 'mvn clean sonar:sonar'
+				}
+			}
+		}
 	}
-}
+}	
