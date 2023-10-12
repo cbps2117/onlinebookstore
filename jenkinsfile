@@ -67,5 +67,21 @@ pipeline {
 				}
 			}
 		}
+		stage('Deploy to Tomcat') {
+			steps {
+				// Use Jenkins credentials binding
+				withCredentials([usernamePassword(credentialsId: 'TomcatCredentials', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
+					script {
+						def tomcatUrl = 'http://18.234.161.208:8080/online-bookstore'
+						def warFile = '${WORKSPACE}/ready_deploy_binary/${BUILD_TIMESTAMP}/onlinebookstore-1.0.war' // Adjust the path to your WAR file.
+
+						sh """
+							curl -T ${warFile} -u $TOMCAT_USER:$TOMCAT_PASS "${tomcatUrl}?path=/your-context-path&update=true"
+						"""
+					}
+				}
+			}
+		}
+
 	}
 }		
