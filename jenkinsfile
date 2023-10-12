@@ -28,6 +28,9 @@ pipeline {
 			}
 		}
 		stage('artifactory-upload'){
+			when {
+				env.BRANCH_NAME == 'master'
+			}
 			steps{
 				script {
 					// Define a new Artifactory server instance
@@ -49,6 +52,9 @@ pipeline {
 			}
 		}
 		stage('download from artifactory'){
+			when {
+				env.BRANCH_NAME == 'master'
+			}
 			steps{
 				script{
 					sh 'mkdir -p ${WORKSPACE}\readytodeploy'
@@ -68,6 +74,9 @@ pipeline {
 			}
 		}
 		stage('Deploy to Tomcat') {
+			when {
+				env.BRANCH_NAME == 'master'
+			}
 			steps {
 				// Use Jenkins credentials binding
 				withCredentials([usernamePassword(credentialsId: 'TomcatCredentials', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
