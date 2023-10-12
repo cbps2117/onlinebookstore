@@ -1,5 +1,8 @@
 pipeline {
 	agent any
+	tools {
+		maven 'maven'
+	}
 	stages {
 		stage('clone-repo'){
 			steps {
@@ -12,4 +15,4 @@ pipeline {
 			}
 		}
 	}
-}	
+}
