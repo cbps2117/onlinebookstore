@@ -1,3 +1,11 @@
+1. Setup pipeline which should automatically clone latest from master branch
+		a. Build
+		b. sonarscan
+		c. check quality
+		d. Upload binary to jfrog
+		e. download binary from jfrog & deploy to tomcat container
+		
+		
 pipeline {
 	agent any
 	tools {
@@ -21,5 +29,11 @@ pipeline {
 				}
 			}
 		}
+		stage('quality-gate-check'){
+			steps {
+				sh 'sleep 30s'
+				waitForQualityGate abortPipeline: true
+			}
+		}
 	}
-}	
+}		
