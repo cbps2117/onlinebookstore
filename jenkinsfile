@@ -27,77 +27,24 @@ pipeline {
 				waitForQualityGate abortPipeline: true
 			}
 		}
-		stage('artifactory-upload'){
-			when {
-				expression {
-					env.BRANCH_NAME == 'master'
-				}
-			}
-			steps{
-				script {
-					// Define a new Artifactory server instance
-					def server = Artifactory.server 'jfrog-instance'  // Replace 'ServerID' with your Artifactory server ID from Jenkins configuration.
-					
-					// Define the artifact
-					def uploadSpec = """{
-						"files": [
-							{
-								"pattern": "**/*.war",
-								"target": "online-bookstore/${BUILD_TIMESTAMP}/onlinebookstore-1.0.war"
-							}
-						]
-					}"""
-
-					// Upload the artifact
-					server.upload(uploadSpec)
+		stage('Upload to Artifactory') {
+            steps {
+                script {
+                    // Define Artifactory upload specifics
+                    def server = Artifactory.server 'jfrog-instance'
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "target/*.war",
+                                "target": "online-bookstore/${BUILD_TIMESTAMP}/"
+                            }
+                        ]
+                    }"""
+                    server.upload(uploadSpec)
                 }
-			}
-		}
-		stage('download from artifactory'){
-			when {
-				expression {
-					env.BRANCH_NAME == 'master'
-				}
-			}
-			steps{
-				script{
-					sh 'mkdir -p ${WORKSPACE}\readytodeploy'
-					def server = Artifactory.server 'jfrog-instance'
-					def downloadSpec = """{
-	                        "files": [
-	                            {
-	                                "pattern": "online-bookstore/${BUILD_TIMESTAMP}/onlinebookstore-1.0.war",
-	                                "target": "${WORKSPACE}/ready_deploy_binary/"
-	                            }
-	                        ]
-	                    }"""
-	
-	                    // Download the artifact
-                    server.download downloadSpec
-				}
-			}
-		}
-		stage('Deploy to Tomcat') {
-			when {
-				expression {
-					env.BRANCH_NAME == 'master'
-				}
-			}
-			steps {
-				// Use Jenkins credentials binding
-				withCredentials([usernamePassword(credentialsId: 'TomcatCredentials', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
-					script {
-						def tomcatUrl = 'http://18.234.161.208:8080/manager/text/deploy'
-						def warFile = '${WORKSPACE}/ready_deploy_binary/${BUILD_TIMESTAMP}/onlinebookstore-1.0.war' // Adjust the path to your WAR file.
-						
-						echo "Executing: curl -T ${warFile} -u $TOMCAT_USER:$TOMCAT_PASS '${tomcatUrl}?path=/your-context-path&update=true'"
-						sh """
-							curl -T ${warFile} -u $TOMCAT_USER:$TOMCAT_PASS "${tomcatUrl}?path=/online-bookstore&update=true"
-						"""
-					}
-				}
-			}
-		}
+            }
+        }
+		
 
 	}
 }		
