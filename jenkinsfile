@@ -10,7 +10,7 @@ pipeline {
         stage('Download from Artifactory') {
             steps {
                 script {
-                    sh 'mkdir -p ${WORKSPACE}\jfrog-downloaded'
+                    sh 'mkdir -p ${WORKSPACE}/jfrog-downloaded'
 					// Define Artifactory download specifics
                     def server = Artifactory.server 'jfrog-instance'
                     def downloadSpec = """{
