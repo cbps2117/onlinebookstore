@@ -1,50 +1,29 @@
 pipeline {
-	agent any
-	tools {
-		maven 'maven'
-	}
-	stages {
-		stage('clone-repo'){
-			steps {
-				checkout scm
-			}
-		}
-		stage('Build') {
-			steps {
-				sh 'mvn clean install'
-			}
-		}
-		stage('sonarqube-scanging'){
-			steps {
-				withSonarQubeEnv('my-sonarqube-server') {
-					sh 'mvn sonar:sonar'
-				}
-			}
-		}
-		stage('quality-gate-check'){
-			steps {
-				sh 'sleep 30s'
-				waitForQualityGate abortPipeline: true
-			}
-		}
-		stage('Upload to Artifactory') {
+    agent any
+
+    tools {
+        // Define the Artifactory tool name, as configured in Jenkins
+        artifactory 'Artifactory-Default'
+    }
+
+    stages {
+        stage('Download from Artifactory') {
             steps {
                 script {
-                    // Define Artifactory upload specifics
+                    sh 'mkdir -p ${WORKSPACE}\jfrog-downloaded'
+					// Define Artifactory download specifics
                     def server = Artifactory.server 'jfrog-instance'
-                    def uploadSpec = """{
+                    def downloadSpec = """{
                         "files": [
                             {
-                                "pattern": "target/*.war",
-                                "target": "online-bookstore/${BUILD_TIMESTAMP}/"
+                                "pattern": "online-bookstore/${BUILD_TIMESTAMP}/*.war",
+                                "target": "jfrog-downloaded/"
                             }
                         ]
                     }"""
-                    server.upload(uploadSpec)
+                    server.download(downloadSpec)
                 }
             }
         }
-		
-
-	}
-}		
+    }
+}
