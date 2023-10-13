@@ -28,6 +28,13 @@ pipeline {
 			}
 		}
 		stage('Upload to Artifactory') {
+			when { 
+				// Only run this stage when the BRANCH_NAME is 'master' 
+				expression 
+					{ 
+						env.BRANCH_NAME == 'master' 
+					} 
+			}
             steps {
                 script {
                     // Define Artifactory upload specifics
@@ -45,6 +52,13 @@ pipeline {
             }
         }
 		stage('Download from Artifactory') {
+			when { 
+				// Only run this stage when the BRANCH_NAME is 'master' 
+				expression 
+					{ 
+						env.BRANCH_NAME == 'master' 
+					} 
+			}
             steps {
                 script {
                     sh 'mkdir -p ${WORKSPACE}/jfrog-downloaded'
@@ -63,6 +77,14 @@ pipeline {
             }
         }
 		stage('Deploy to TOmcat'){
+			when { 
+				// Only run this stage when the BRANCH_NAME is 'master' 
+				expression 
+					{ 
+						env.BRANCH_NAME == 'master' 
+					} 
+			}
+
 			steps {
 				// Use Jenkins credentials binding
 				withCredentials([usernamePassword(credentialsId: 'TomcatCredentials', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASS')]) {
