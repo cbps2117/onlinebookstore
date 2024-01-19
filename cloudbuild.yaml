@@ -1,7 +1,7 @@
 steps:
-  # Step 1: Clone the Git repository
-  - name: 'gcr.io/cloud-builders/git'
-    args: ['clone', 'https://github.com/cbps2117/onlinebookstore.git', '.']
+#  # Step 1: Clone the Git repository
+#  - name: 'gcr.io/cloud-builders/git'
+#    args: ['clone', 'https://github.com/cbps2117/onlinebookstore.git', '.']
 
   # Step 2: Build the Java application using Maven
   - name: 'maven:3.8.4'  # You can specify the version of Maven you want to use
